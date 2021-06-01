@@ -71,6 +71,8 @@ public class SparePartReportGatewayImpl implements SparePartReportGateway {
 
 			part = rs.next() ? Optional.of(RecordAssembler.toSparePartReportRecordWithOutUnitsSold(rs)) : Optional.empty();
 
+			System.out.println(part);
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

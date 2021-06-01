@@ -27,8 +27,10 @@ public class FindByCodeSparePart implements Command<Optional<SparePartReportDto>
 		SparePartReportGateway spg = PersistenceFactory.forSparePartReport();
 
 		if(spg.isPresent(code).isPresent()){
+			System.out.println("isPresent");
 			return DtoMapper.toDtoSPRep(spg.findByCode(code));
 		} else {
+			System.out.println("isNotPresent");
 			return Optional.empty();
 		}
 
