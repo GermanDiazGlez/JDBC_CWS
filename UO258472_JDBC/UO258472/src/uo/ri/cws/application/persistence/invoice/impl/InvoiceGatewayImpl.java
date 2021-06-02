@@ -2,6 +2,7 @@ package uo.ri.cws.application.persistence.invoice.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -71,8 +72,23 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 
 	@Override
 	public Long getNextInvoiceNumber() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		try {
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_GET_NEXT_INVOICE_NUMBER"));
+
+			rs = pst.executeQuery();
+
+			if(rs.next()){
+				return rs.getLong(1) + 1;
+			} else {
+				return 1L;
+			}
+
+		} finally {
+			Jdbc.close(rs, pst);
+		}
 	}
 
 }

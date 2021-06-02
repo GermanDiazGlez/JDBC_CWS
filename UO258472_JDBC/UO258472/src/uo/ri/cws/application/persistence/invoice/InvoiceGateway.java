@@ -24,4 +24,5 @@ public interface InvoiceGateway extends Gateway<InvoiceRecord> {
 	 *  
 	 */
 	Long getNextInvoiceNumber() throws SQLException;
+
 }

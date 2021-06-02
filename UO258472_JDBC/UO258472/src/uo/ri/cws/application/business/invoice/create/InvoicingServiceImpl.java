@@ -10,13 +10,15 @@ import uo.ri.cws.application.business.invoice.InvoicingService;
 import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.invoice.PaymentMeanDto;
 import uo.ri.cws.application.business.invoice.create.commands.CreateInvoice;
+import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class InvoicingServiceImpl implements InvoicingService {
 
+	CommandExecutor executor = new CommandExecutor();
+
 	@Override
 	public InvoiceDto createInvoiceFor(List<String> workOrderIds) throws BusinessException {
-		CreateInvoice ci = new CreateInvoice(workOrderIds);
-		return ci.execute();
+		return executor.execute(new CreateInvoice(workOrderIds));
 	}
 
 	@Override
@@ -42,11 +44,5 @@ public class InvoicingServiceImpl implements InvoicingService {
 		// TODO Auto-generated method stub
 
 	}
-	
-//	@Override
-//	public InvoiceDto createInvoice(InvoiceRecord invoice) throws BusinessException {
-//		CreateInvoice ci = new CreateInvoice(invoice);
-//		return ci.createInvoice(invoice);
-//	}
 
 }

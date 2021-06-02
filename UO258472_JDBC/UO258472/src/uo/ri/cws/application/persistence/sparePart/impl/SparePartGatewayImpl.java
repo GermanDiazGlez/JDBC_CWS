@@ -14,7 +14,7 @@ import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
 import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
 
-public class SparePartGatewayImpl implements SparePartGateway {
+public class  SparePartGatewayImpl implements SparePartGateway {
 
 	@Override
 	public void add(SparePartRecord sp) throws SQLException {

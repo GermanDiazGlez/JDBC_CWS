@@ -33,4 +33,11 @@ public interface WorkOrderGateway extends Gateway<WorkOrderRecord>{
 	 * 
 	 */
 	List<WorkOrderRecord> findByStatus(String status);
+
+	/**
+	 * @param the dni of the client
+	 * @return a list of all work orders not invoiced
+	 * @throws SQLException
+	 */
+    List<WorkOrderRecord> findNotInvoiced(String dni) throws SQLException;
 }
