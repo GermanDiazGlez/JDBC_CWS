@@ -72,6 +72,7 @@ public class GenerateOrders implements Command<List<OrderDto>>{
 			if(orderDto == null){
 				orderDto = createOrder();
 				orderDto.provider = DtoMapper.toDtoForOrderedProvider(provider.get());
+				orderGateway.add(DtoMapper.toRecord(orderDto));
 				orders.add(orderDto);
 			}
 
@@ -105,7 +106,6 @@ public class GenerateOrders implements Command<List<OrderDto>>{
 		dto.id = UUID.randomUUID().toString();
 		dto.orderedDate = LocalDate.now();
 		dto.status = "PENDING";
-		orderGateway.add(DtoMapper.toRecord(dto));
 		return dto;
 	}
 }
