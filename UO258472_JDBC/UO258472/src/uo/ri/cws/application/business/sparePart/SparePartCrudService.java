@@ -74,4 +74,5 @@ public interface SparePartCrudService {
 	 */
 	List<SparePartDto> findAll() throws BusinessException;
 
+	List<SparePartDto> findUnderStock() throws BusinessException;
 }

@@ -19,11 +19,6 @@ public class SparePartReportServiceImpl implements SparePartReportService {
 		return executor.execute(fbd);
 	}
 
-	@Override
-	public List<SparePartReportDto> findUnderStock() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Optional<SparePartReportDto> findByCode(String code) throws BusinessException {

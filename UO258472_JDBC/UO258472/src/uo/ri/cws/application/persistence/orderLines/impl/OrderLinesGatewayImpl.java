@@ -18,8 +18,16 @@ public class OrderLinesGatewayImpl implements OrderLinesGateway{
 
 	@Override
 	public void add(OrderLinesRecord t) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERLINES_ADD"));
+
+		pst.setString(1, t.sparepart_id);
+		pst.setString(2, t.order_id);
+		pst.setDouble(3, t.price);
+		pst.setInt(4, t.quantity);
+
+		pst.executeUpdate();
 	}
 
 	@Override

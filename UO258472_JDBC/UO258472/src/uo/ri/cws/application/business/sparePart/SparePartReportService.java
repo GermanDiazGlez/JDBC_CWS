@@ -15,12 +15,6 @@ public interface SparePartReportService {
 	List<SparePartReportDto> findByDescription(String desc) throws BusinessException;
 
 	/**
-	 * Not implemented, not needed
-	 * @return
-	 */
-	List<SparePartReportDto> findUnderStock();
-
-	/**
 	 * @param spare part code
 	 * @return the spare part identified by the code or Optional.empty() if
 	 * 		does not exist

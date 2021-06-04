@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import alb.util.jdbc.Jdbc;
@@ -69,58 +70,37 @@ public class SupplyGatewayImpl implements SupplyGateway {
 	}
 
 	@Override
-	public Optional<SupplyRecord> findBySparePartId(String id) {
-		Connection c = null;
+	public Optional<SupplyRecord> findBySparePartId(String id) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<SupplyRecord> supp = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_BY_ID"));
+		pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_BY_ID"));
-			pst.setString(1, id);
-			rs = pst.executeQuery();
+		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
 
-			supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return supp;
 	}
 
 	@Override
-	public Optional<SupplyRecord> findBestProviderBySparePartId(String id) {
-		Connection c = null;
+	public List<SupplyRecord> findBestProviderBySparePartId(String id) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
-		Optional<SupplyRecord> supp = null;
-		SupplyRecord sup = new SupplyRecord();
+		List<SupplyRecord> providers = new ArrayList<>();
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BEST_PROVIDER_BY_SPAREPART_ID"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BEST_PROVEEDOR_BY_SPAREPART_ID"));
-			pst.setString(1, id);
-			rs = pst.executeQuery();
+		pst.setString(1, id);
 
-			if(rs.next()){
-				sup.providerId = rs.getString(1);
-				sup.price = rs.getDouble(2);
-			}
-			supp = Optional.ofNullable(RecordAssembler.toSupplyRecord(sup));
+		rs = pst.executeQuery();
 
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+		while (rs.next()){
+			providers.add(RecordAssembler.toSupplyRecord(rs));
 		}
-		finally {
-			Jdbc.close(pst);
-		}
-		return supp;
+
+		return providers;
 	}
 
 }

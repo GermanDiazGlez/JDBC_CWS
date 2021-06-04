@@ -191,8 +191,8 @@ public class RecordAssembler {
 		SupplyRecord dto = new SupplyRecord();
 		dto.id = m.getString("id");
 		dto.version = m.getLong("version");
-		dto.providerId = m.getString("providerId");
-		dto.sparePartId = m.getString("sparePartId");
+		dto.providerId = m.getString("provider_Id");
+		dto.sparePartId = m.getString("sparePart_Id");
 		dto.deliveryTerm = m.getInt("deliveryTerm");
 		dto.price = m.getDouble("price");
 		return dto;

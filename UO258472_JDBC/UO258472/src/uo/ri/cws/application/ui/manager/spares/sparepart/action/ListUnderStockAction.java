@@ -14,7 +14,7 @@ public class ListUnderStockAction implements Action {
 	@Override
 	public void execute() throws Exception {
 		SparePartCrudService service = BusinessFactory.forSparePartCrudService();
-		List<SparePartDto> spares = service.findAll();
+		List<SparePartDto> spares = service.findUnderStock();
 		
 		Console.println("There are " + spares.size() + " spares");
 		for(SparePartDto sp: spares) {

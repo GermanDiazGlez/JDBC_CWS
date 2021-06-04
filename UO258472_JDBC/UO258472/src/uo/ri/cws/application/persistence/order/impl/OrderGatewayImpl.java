@@ -71,8 +71,19 @@ public class OrderGatewayImpl implements OrderGateway{
 
 	@Override
 	public void add(OrderRecord t) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERS_ADD"));
+
+		pst.setString(1, t.code);
+		pst.setString(2, t.id);
+		pst.setDate(3, Date.valueOf(t.orderedDate));
+		pst.setDouble(4, t.amount);
+		pst.setString(5, t.providerId);
+		pst.setString(6, t.status);
+		pst.setLong(7, t.version);
+
+		pst.executeUpdate();
 	}
 
 
@@ -85,7 +96,14 @@ public class OrderGatewayImpl implements OrderGateway{
 
 	@Override
 	public void update(OrderRecord t) throws SQLException {
-		// TODO Auto-generated method stub
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERS_UPDATE"));
+
+		pst.setDouble(1, t.amount);
+		pst.setString(2, t.id);
+
+		pst.executeUpdate();
 		
 	}
 

@@ -1,5 +1,6 @@
 package uo.ri.cws.application.persistence.sparePart;
 
+import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.persistence.Gateway;
@@ -26,4 +27,9 @@ public interface SparePartGateway extends Gateway<SparePartRecord> {
 	 * @return
 	 */
     Optional<SparePartRecord> isPresent(String code);
+
+	/**
+	 * @return the spare parts which stock is under the minimum
+	 */
+    List<SparePartRecord> findUnderStock();
 }

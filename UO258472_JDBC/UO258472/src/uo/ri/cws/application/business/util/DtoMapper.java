@@ -1,12 +1,17 @@
 package uo.ri.cws.application.business.util;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
 import uo.ri.cws.application.business.invoice.InvoiceDto;
+import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
 import uo.ri.cws.application.business.order.OrderDto;
 import uo.ri.cws.application.business.order.OrderDto.OrderLineDto;
+import uo.ri.cws.application.business.order.OrderDto.OrderedSpareDto;
+import uo.ri.cws.application.business.order.OrderDto.OrderedProviderDto;
+import uo.ri.cws.application.business.order.OrderLinesDto;
 import uo.ri.cws.application.business.provider.ProviderDto;
 import uo.ri.cws.application.business.sparePart.SparePartDto;
 import uo.ri.cws.application.business.sparePart.SparePartReportDto;
@@ -20,6 +25,7 @@ import uo.ri.cws.application.persistence.provider.ProviderRecord;
 import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
 import uo.ri.cws.application.persistence.sparePart.SparePartReportRecord;
 import uo.ri.cws.application.persistence.supply.SupplyRecord;
+import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
 public class DtoMapper {
 
@@ -342,6 +348,44 @@ public class DtoMapper {
 		SupplyDto result = new SupplyDto();
 		result.provider.id = provider_id;
 		result.price = price;
+		return result;
+	}
+
+    public static OrderedSpareDto toOrderedDto(SparePartRecord p) {
+		OrderedSpareDto osDto = new OrderedSpareDto();
+		osDto.code = p.code;
+		osDto.id = p.id;
+		osDto.description = p.description;
+		return osDto;
+    }
+
+	public static OrderedProviderDto toDtoForOrderedProvider(ProviderRecord provider) {
+		OrderedProviderDto result = new OrderedProviderDto();
+		result.id = provider.id;
+		result.nif = provider.nif;
+		result.name = provider.name;
+		return result;
+	}
+
+	public static OrderRecord toRecord(OrderDto dto) {
+		OrderRecord result = new OrderRecord();
+		result.code = dto.code;
+		result.id = dto.id;
+		result.orderedDate = dto.orderedDate;
+		result.amount = dto.amount;
+		result.providerId = dto.provider.id;
+		result.status = dto.status;
+		result.version = dto.version;
+		return result;
+	}
+
+	public static OrderLinesRecord toRecord(OrderLineDto orderLineDto, String orderId) {
+		OrderLinesRecord result = new OrderLinesRecord();
+		result.order_id = orderId;
+		result.sparepart_id = orderLineDto.sparePart.id;
+		result.price = orderLineDto.price;
+		result.quantity = orderLineDto.quantity;
+
 		return result;
 	}
 }

@@ -4,7 +4,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import org.junit.jupiter.api.Order;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.order.OrderDto;
 import uo.ri.cws.application.business.provider.ProviderDto;
@@ -12,87 +15,97 @@ import uo.ri.cws.application.business.sparePart.SparePartDto;
 import uo.ri.cws.application.business.supply.SupplyDto;
 import uo.ri.cws.application.business.util.DtoMapper;
 import uo.ri.cws.application.business.util.command.Command;
+import uo.ri.cws.application.persistence.PersistenceFactory;
+import uo.ri.cws.application.business.order.OrderDto.OrderLineDto;
 import uo.ri.cws.application.persistence.order.OrderGateway;
 import uo.ri.cws.application.persistence.order.impl.OrderGatewayImpl;
+import uo.ri.cws.application.persistence.orderLines.OrderLinesGateway;
 import uo.ri.cws.application.persistence.provider.ProviderGateway;
+import uo.ri.cws.application.persistence.provider.ProviderRecord;
 import uo.ri.cws.application.persistence.provider.impl.ProviderGatewayImpl;
 import uo.ri.cws.application.persistence.sparePart.SparePartGateway;
+import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
+import uo.ri.cws.application.persistence.sparePart.SparePartReportGateway;
 import uo.ri.cws.application.persistence.sparePart.impl.SparePartGatewayImpl;
 import uo.ri.cws.application.persistence.supply.SupplyGateway;
+import uo.ri.cws.application.persistence.supply.SupplyRecord;
 import uo.ri.cws.application.persistence.supply.impl.SupplyGatewayImpl;
+import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class GenerateOrders implements Command<List<OrderDto>>{
 
+	private SparePartGateway sparePartGateway = PersistenceFactory.forSparePart();
+	private ProviderGateway providerGateway = PersistenceFactory.forProviders();
+	private SupplyGateway supplyGateway = PersistenceFactory.forSupplies();
+	private OrderGateway orderGateway = PersistenceFactory.forOrders();
+	private OrderLinesGateway orderLinesGateway = PersistenceFactory.forOrderLines();
+
+
 	@Override
 	public List<OrderDto> execute() throws BusinessException, SQLException {
-		List<SparePartDto> spareParts;
-		List<OrderDto> ordersToGenerate = new ArrayList<>();
-		OrderGateway og = new OrderGatewayImpl();
-		ProviderGateway pg = new ProviderGatewayImpl();
-		SparePartGateway spg = new SparePartGatewayImpl();
-		SupplyGateway sg = new SupplyGatewayImpl();
-		boolean exist = false;
+		List<SparePartRecord> parts = sparePartGateway.findUnderStock();
 
-		//Primero sacamos las piezas cullo stock es menor que el minStock
-		spareParts = DtoMapper.toDtoListSP(spg.findAll());
+		List<OrderDto> orders = new ArrayList<>();
 
-		for (SparePartDto sparePart: spareParts) {
-			//Obtenemos el mejor proveedor para cada sparePart
-			SupplyDto supply = DtoMapper.toDto(sg.findBestProviderBySparePartId(sparePart.id).get());
-			OrderDto.OrderLineDto orderLine = new OrderDto.OrderLineDto();
-			OrderDto.OrderedSpareDto spare = new OrderDto.OrderedSpareDto();
-			spare.id = sparePart.id;
-			spare.description = sparePart.description;
-			orderLine.sparePart = spare;
-			orderLine.price = supply.price;
-			int amountToOrder = sparePart.maxStock-sparePart.stock;
-			orderLine.quantity = amountToOrder;
-			double amount = amountToOrder * orderLine.price;
-
-			//Si el pedido ya existe, añadimos las lines y sino lo creamos
-			exist = false;
-			for (OrderDto order: ordersToGenerate) {
-				if(supply.provider.id != null){
-					if(order.provider.id==supply.provider.id){
-						order.lines.add(orderLine);
-						order.amount += amount;
-						order.provider.id = supply.provider.id;
-						ProviderDto prov = DtoMapper.toDto(pg.findById(supply.provider.id).get());
-						order.provider.nif = prov.nif;
-						order.provider.name = prov.name;
-						LocalDate date = LocalDate.now();
-						order.orderedDate = date;
-						order.status = "PENDING";
-						exist = true;
-					}
-				}
-			}
-			if(supply.provider.id != null) {
-				if (!exist) {
-					OrderDto order = new OrderDto();
-					long number = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-					order.code = String.valueOf(number);
-					order.provider.id = supply.provider.id;
-					order.lines.add(orderLine);
-					order.amount = amount;
-					ProviderDto prov = DtoMapper.toDto(pg.findById(supply.provider.id).get());
-					order.provider.nif = prov.nif;
-					order.provider.name = prov.name;
-					order.provider.id = supply.provider.id;
-					LocalDate date = LocalDate.now();
-					order.orderedDate = date;
-					order.status = "PENDING";
-					ordersToGenerate.add(order);
-				}
-			}
+		for(SparePartRecord p : parts){
+			generateOrder(p, orders);
 		}
-
-		for (OrderDto order: ordersToGenerate) {
-			og.insertOrder(DtoMapper.toRecordOrIns(order));
-		}
-		
-		return ordersToGenerate;
-		
+		return orders;
 	}
 
+	private OrderDto generateOrder(SparePartRecord p, List<OrderDto> orders) throws SQLException {
+		OrderLineDto orderLineDto = new OrderLineDto();
+		orderLineDto.sparePart = DtoMapper.toOrderedDto(p);
+		orderLineDto.quantity = p.maxStock - p.stock;
+
+		OrderDto orderDto = null;
+		Optional<ProviderRecord> provider = findProvider(orderLineDto);
+
+		if (provider.isPresent()){
+			for(OrderDto o : orders){
+				if(o.provider.id.equals(provider.get().id)){
+					orderDto = o;
+					break;
+				}
+			}
+
+			if(orderDto == null){
+				orderDto = createOrder();
+				orderDto.provider = DtoMapper.toDtoForOrderedProvider(provider.get());
+				orders.add(orderDto);
+			}
+
+			orderLinesGateway.add(DtoMapper.toRecord(orderLineDto, orderDto.id));
+
+			orderDto.lines.add(orderLineDto);
+			orderDto.amount += orderLineDto.price * orderLineDto.quantity;
+			orderGateway.update(DtoMapper.toRecord(orderDto));
+		}
+
+		return orderDto;
+	}
+
+
+	private Optional<ProviderRecord> findProvider(OrderLineDto orderLineDto) throws SQLException {
+		Optional<ProviderRecord> provider = Optional.ofNullable(null);
+
+		List<SupplyRecord> supplies = supplyGateway.findBestProviderBySparePartId(orderLineDto.sparePart.id);
+
+		if(supplies.size() > 0){
+			SupplyRecord supply = supplies.get(0);
+			orderLineDto.price = supply.price;
+			provider = providerGateway.findById(supply.providerId);
+		}
+		return provider;
+	}
+
+	private OrderDto createOrder() throws SQLException {
+		OrderDto dto = new OrderDto();
+		dto.code = UUID.randomUUID().toString();
+		dto.id = UUID.randomUUID().toString();
+		dto.orderedDate = LocalDate.now();
+		dto.status = "PENDING";
+		orderGateway.add(DtoMapper.toRecord(dto));
+		return dto;
+	}
 }

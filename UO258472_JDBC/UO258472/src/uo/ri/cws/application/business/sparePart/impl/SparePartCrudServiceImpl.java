@@ -49,6 +49,11 @@ public class SparePartCrudServiceImpl implements SparePartCrudService {
 		return executor.execute(fam);
 	}
 
-	
+	@Override
+	public List<SparePartDto> findUnderStock() throws BusinessException {
+		FindUnderStock fus = new FindUnderStock();
+		return executor.execute(fus);
+	}
+
 
 }

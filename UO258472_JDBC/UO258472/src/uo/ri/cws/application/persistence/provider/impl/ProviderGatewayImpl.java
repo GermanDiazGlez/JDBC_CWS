@@ -36,28 +36,18 @@ public class ProviderGatewayImpl implements ProviderGateway {
 
 	@Override
 	public Optional<ProviderRecord> findById(String id) throws SQLException {
-		Connection c = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<ProviderRecord> prov = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_ID"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_ID"));
+		pst.setString(1, id);
 
-			pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
 
-			prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return prov;
 	}
 

@@ -4,15 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import alb.util.jdbc.Jdbc;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.common.record.Record;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.persistence.sparePart.SparePartGateway;
 import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
 import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
+
+import javax.xml.transform.Result;
 
 public class  SparePartGatewayImpl implements SparePartGateway {
 
@@ -203,6 +207,29 @@ public class  SparePartGatewayImpl implements SparePartGateway {
 			Jdbc.close(pst);
 		}
 		return part;
+	}
+
+	@Override
+	public List<SparePartRecord> findUnderStock() {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List<SparePartRecord> parts = new ArrayList<>();
+
+		try{
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_UNDER_STOCK"));
+
+			rs = pst.executeQuery();
+
+			parts = RecordAssembler.toSparePartRecordList(rs);
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		finally {
+			Jdbc.close(pst);
+		}
+
+		return parts;
 	}
 
 }
