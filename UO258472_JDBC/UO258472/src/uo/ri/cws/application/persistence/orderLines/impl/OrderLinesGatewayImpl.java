@@ -72,6 +72,8 @@ public class OrderLinesGatewayImpl implements OrderLinesGateway{
 
 			lines = RecordAssembler.toOrderLinesRecordList(rs);
 
+			System.out.println(lines);
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

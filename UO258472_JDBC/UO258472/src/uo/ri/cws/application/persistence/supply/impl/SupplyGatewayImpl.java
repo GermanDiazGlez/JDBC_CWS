@@ -103,4 +103,21 @@ public class SupplyGatewayImpl implements SupplyGateway {
 		return providers;
 	}
 
+	@Override
+	public Optional<SupplyRecord> findProviderById(String id) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Optional<SupplyRecord> supp = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_PROVIDER"));
+		pst.setString(1, id);
+		rs = pst.executeQuery();
+
+		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
+
+		System.out.println(supp);
+
+		return supp;
+	}
+
 }

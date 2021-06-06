@@ -18,19 +18,45 @@ public class ProviderGatewayImpl implements ProviderGateway {
 
 	@Override
 	public void add(ProviderRecord t) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_ADD"));
+
+		pst.setString(1, t.id);
+		pst.setString(2, t.email);
+		pst.setString(3, t.name);
+		pst.setString(4, t.nif);
+		pst.setString(5, t.phone);
+		pst.setLong(6, 1L);
+
+		pst.executeUpdate();
+
 	}
 
 	@Override
-	public void remove(String id) throws SQLException, BusinessException {
-		// TODO Auto-generated method stub
+	public void remove(String nif) throws SQLException, BusinessException {
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_DELETE"));
+
+		pst.setString(1, nif);
+
+		pst.executeUpdate();
 		
 	}
 
 	@Override
 	public void update(ProviderRecord t) throws SQLException {
-		// TODO Auto-generated method stub
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_UPDATE"));
+
+		pst.setString(1, t.name);
+		pst.setString(2, t.email);
+		pst.setString(3, t.phone);
+		pst.setString(4, t.nif);
+
+		pst.executeUpdate();
 		
 	}
 
@@ -58,29 +84,19 @@ public class ProviderGatewayImpl implements ProviderGateway {
 	}
 
 	@Override
-	public Optional<ProviderRecord> findProviderByNif(String nif) {
-		Connection c = null;
+	public Optional<ProviderRecord> findProviderByNif(String nif) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<ProviderRecord> prov = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
-			
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_NIF"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_NIF"));
 
-			pst.setString(1, nif);
+		pst.setString(1, nif);
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
+		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
+
 		return prov;
 	}
 
@@ -135,6 +151,25 @@ public class ProviderGatewayImpl implements ProviderGateway {
 		finally {
 			Jdbc.close(pst);
 		}
+		return prov;
+	}
+
+	@Override
+	public Optional<ProviderRecord> findProviderByOthers(String name, String email, String phone) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Optional<ProviderRecord> prov = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_PROVIDER_BY_OTHERS"));
+
+		pst.setString(1, name);
+		pst.setString(2, email);
+		pst.setString(3, phone);
+
+		rs = pst.executeQuery();
+
+		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
+
 		return prov;
 	}
 

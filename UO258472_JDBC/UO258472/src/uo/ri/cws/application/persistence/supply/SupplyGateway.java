@@ -21,4 +21,11 @@ public interface SupplyGateway extends Gateway<SupplyRecord> {
 	 * @return SupplyRecord or null if none
 	 */
 	List<SupplyRecord> findBestProviderBySparePartId(String id) throws SQLException;
+
+	/**
+	 * Return an SupplyRecord if can match one with the provider nif
+	 * @param nif
+	 * @return
+	 */
+    Optional<SupplyRecord> findProviderById(String id) throws SQLException;
 }

@@ -27,6 +27,8 @@ import uo.ri.cws.application.persistence.sparePart.SparePartReportRecord;
 import uo.ri.cws.application.persistence.supply.SupplyRecord;
 import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
+import javax.swing.text.html.Option;
+
 public class DtoMapper {
 
 	//Mechanics
@@ -388,4 +390,16 @@ public class DtoMapper {
 
 		return result;
 	}
+
+    public static ProviderRecord toRecord(ProviderDto provider) {
+		ProviderRecord restult = new ProviderRecord();
+		restult.id = provider.id;
+		restult.nif = provider.nif;
+		restult.name = provider.name;
+		restult.email = provider.email;
+		restult.phone = provider.phone;
+
+		return restult;
+    }
+
 }

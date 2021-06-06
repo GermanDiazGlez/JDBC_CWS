@@ -291,22 +291,15 @@ public class RecordAssembler {
 	}
 
 	/**
-	 * Transforms a ResultSet into a OrderLinesRecord
+	 * Transforms a ResultSet into a OrderLinesRecord for the orderDetail
 	 */
 	public static OrderLinesRecord toOrderLinesRecord(ResultSet m) throws SQLException {
 		OrderLinesRecord dto = new OrderLinesRecord();
 		dto.price = m.getDouble("price");
 		dto.quantity = m.getInt("quantity");
-		dto.sparepart_id = m.getString("sparepart_id");
-		dto.order_id = m.getString("order_id");
 		
 		dto.code = m.getString("code");
 		dto.description = m.getString("description");
-		dto.maxStock = m.getInt("maxStock");
-		dto.minStock = m.getInt("minStock");
-		dto.stock = m.getInt("stock");
-		dto.partPrice = m.getDouble("price");
-		dto.version = m.getLong("version");
 		return dto;
 	}
 

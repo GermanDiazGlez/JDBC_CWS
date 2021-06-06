@@ -2,6 +2,7 @@ package uo.ri.cws.application.ui.manager;
 
 import alb.util.menu.BaseMenu;
 import uo.ri.cws.application.ui.manager.spares.order.OrdersMenu;
+import uo.ri.cws.application.ui.manager.spares.provider.ProvidersMenu;
 import uo.ri.cws.application.ui.manager.spares.sparepart.SparePartsMenu;
 
 public class MainMenu extends BaseMenu {
@@ -12,6 +13,7 @@ public class MainMenu extends BaseMenu {
 			{ "Mechanics management", 			MechanicMenu.class }, 
 			{ "Spare parts management", 			SparePartsMenu.class },
 			{ "Vehicle types management", 	VehicleTypeMenu.class },
+			{ "Providers management", 	ProvidersMenu.class },
 		};
 	}
 
