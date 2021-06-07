@@ -28,6 +28,27 @@ public class BusinessFactory {
 		return new InvoicingServiceImpl();
 	}
 
+	public static ProvidersCrudService forProvidersService(){
+		return new ProvidersCrudServiceImpl();
+	}
+
+	public static OrdersService forOrdersService(){
+		return new OrdersServiceImpl();
+	}
+
+	public static SparePartReportService forSparePartReportService(){
+		return new SparePartReportServiceImpl();
+	}
+
+	public static SuppliesCrudService forSuppliesCrudService(){
+		return new SuppliesCrudServiceImpl();
+	}
+
+	public static SparePartCrudService forSparePartCrudService() {
+		return new SparePartCrudServiceImpl();
+	}
+
+
 //	public static WorkOrderCrudService forWorkOrderService() {
 //		throw new RuntimeException("Not yet implemented");
 //	}
@@ -67,11 +88,7 @@ public class BusinessFactory {
 //	public static ClientCrudService forClientCrudService() {
 //		throw new RuntimeException("Not yet implemented");
 //	}
-
-	public static SparePartCrudService forSparePartCrudService() {
-		return new SparePartCrudServiceImpl();
-	}
-
+//
 //	public static SettleInvoiceService forSettleInvoiceService() {
 //		throw new RuntimeException("Not yet implemented");
 //	}
@@ -84,20 +101,6 @@ public class BusinessFactory {
 //		throw new RuntimeException("Not yet implemented");
 //	}
 	
-	public static ProvidersCrudService forProvidersService(){
-		return new ProvidersCrudServiceImpl();
-	}
 
-	public static OrdersService forOrdersService(){
-		return new OrdersServiceImpl();
-	}
-	
-	public static SparePartReportService forSparePartReportService(){
-		return new SparePartReportServiceImpl();
-	}
-	
-	public static SuppliesCrudService forSuppliesCrudService(){
-		return new SuppliesCrudServiceImpl();
-	}
 }
 
