@@ -55,31 +55,19 @@ public class OrderLinesGatewayImpl implements OrderLinesGateway{
 	}
 
 	@Override
-	public List<OrderLinesRecord> getLinesForOrder(String id_order) {
-		Connection c = null;
+	public List<OrderLinesRecord> getLinesForOrder(String id_order) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		List<OrderLinesRecord> lines = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERLINES_GET_LINES"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TORDERLINES_GET_LINES"));
-			
-			pst.setString(1, id_order);
+		pst.setString(1, id_order);
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			lines = RecordAssembler.toOrderLinesRecordList(rs);
+		lines = RecordAssembler.toOrderLinesRecordList(rs);
 
-			System.out.println(lines);
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(rs, pst);
-		}
 		return lines;
 	}
 

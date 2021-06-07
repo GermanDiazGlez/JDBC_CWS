@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import alb.util.random.Random;
 import org.junit.jupiter.api.Order;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.order.OrderDto;
@@ -102,7 +103,8 @@ public class GenerateOrders implements Command<List<OrderDto>>{
 
 	private OrderDto createOrder() throws SQLException {
 		OrderDto dto = new OrderDto();
-		dto.code = UUID.randomUUID().toString();
+		String code = Random.string('A', 'Z', 10);
+		dto.code = code;
 		dto.id = UUID.randomUUID().toString();
 		dto.orderedDate = LocalDate.now();
 		dto.status = "PENDING";

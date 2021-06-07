@@ -9,6 +9,7 @@ import uo.ri.cws.application.business.order.OrdersService;
 import uo.ri.cws.application.business.order.impl.crud.FindByCode;
 import uo.ri.cws.application.business.order.impl.crud.FindByProviderNif;
 import uo.ri.cws.application.business.order.impl.crud.GenerateOrders;
+import uo.ri.cws.application.business.order.impl.crud.ReceiveOrder;
 import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class OrdersServiceImpl implements OrdersService {
@@ -34,8 +35,8 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public OrderDto receive(String code) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		ReceiveOrder ro = new ReceiveOrder(code);
+		return executor.execute(ro);
 	}
 
 }

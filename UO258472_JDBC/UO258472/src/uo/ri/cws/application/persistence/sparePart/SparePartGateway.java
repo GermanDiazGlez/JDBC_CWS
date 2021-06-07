@@ -1,5 +1,6 @@
 package uo.ri.cws.application.persistence.sparePart;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,12 @@ public interface SparePartGateway extends Gateway<SparePartRecord> {
 	 */
 	Optional<SparePartRecord> findByCode(String code);
 
-	/**
+    @Override
+    default void update(SparePartRecord partRecord) throws SQLException {
+
+    }
+
+    /**
 	 * Return the SparepartRecord that matches with the id
 	 * @param id
 	 * @return SparePartRecord or null if none

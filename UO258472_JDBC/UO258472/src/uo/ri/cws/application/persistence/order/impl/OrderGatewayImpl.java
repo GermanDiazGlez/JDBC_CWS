@@ -224,4 +224,19 @@ public class OrderGatewayImpl implements OrderGateway{
 		}
 	}
 
+	@Override
+	public void updateStatusAndDate(OrderRecord t) throws SQLException {
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERS_UPDATE_STATUS"));
+
+		pst.setString(1, t.status);
+		Date date1 = java.sql.Date.valueOf(t.receptionDate);
+		pst.setDate(2, date1);
+		pst.setString(3, t.id);
+
+		pst.executeUpdate();
+
+	}
+
 }

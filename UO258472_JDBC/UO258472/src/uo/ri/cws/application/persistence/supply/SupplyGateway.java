@@ -28,4 +28,11 @@ public interface SupplyGateway extends Gateway<SupplyRecord> {
 	 * @return
 	 */
     Optional<SupplyRecord> findProviderById(String id) throws SQLException;
+
+	/**
+	 * Return the providers who provide that sparePart
+	 * @param id
+	 * @return
+	 */
+	List<SupplyRecord> findProvidersBySparePartId(String id) throws SQLException;
 }

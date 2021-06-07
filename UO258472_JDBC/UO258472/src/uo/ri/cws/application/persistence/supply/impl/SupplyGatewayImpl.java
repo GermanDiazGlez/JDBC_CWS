@@ -47,8 +47,19 @@ public class SupplyGatewayImpl implements SupplyGateway {
 
 	@Override
 	public void add(SupplyRecord t) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_ADD"));
+
+		pst.setString(1, t.id);
+		pst.setInt(2, t.deliveryTerm);
+		pst.setDouble(3, t.price);
+		pst.setLong(4, t.version);
+		pst.setString(5, t.providerId);
+		pst.setString(6, t.sparePartId);
+
+		pst.executeUpdate();
+
 	}
 
 	@Override
@@ -118,6 +129,25 @@ public class SupplyGatewayImpl implements SupplyGateway {
 		System.out.println(supp);
 
 		return supp;
+	}
+
+	@Override
+	public List<SupplyRecord> findProvidersBySparePartId(String sparePartId) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List<SupplyRecord> providers = new ArrayList<>();
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_PROVIDERS_BY_SPAREPART_ID"));
+
+		pst.setString(1, sparePartId);
+
+		rs = pst.executeQuery();
+
+		while (rs.next()){
+			providers.add(RecordAssembler.toSupplyRecord(rs));
+		}
+
+		return providers;
 	}
 
 }

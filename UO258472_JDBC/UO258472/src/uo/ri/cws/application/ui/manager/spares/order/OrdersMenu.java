@@ -3,7 +3,9 @@ package uo.ri.cws.application.ui.manager.spares.order;
 import alb.util.menu.BaseMenu;
 import uo.ri.cws.application.ui.manager.spares.order.action.GenerateOrdersAction;
 import uo.ri.cws.application.ui.manager.spares.order.action.ListByProviderAction;
+import uo.ri.cws.application.ui.manager.spares.order.action.ReceiveOrderAction;
 import uo.ri.cws.application.ui.manager.spares.order.action.ViewOrderDetailAction;
+import uo.ri.cws.application.ui.manager.spares.supply.SuppliesMenu;
 
 public class OrdersMenu extends BaseMenu {
 
@@ -14,7 +16,8 @@ public class OrdersMenu extends BaseMenu {
 			{ "Generate", 			GenerateOrdersAction.class },
 			{ "View order detail", 	ViewOrderDetailAction.class },
 			{ "List by provider", 	ListByProviderAction.class },
-			{ "Receive order", 		null },
+			{ "Receive order", 		ReceiveOrderAction.class },
+			{ "Supplies management", SuppliesMenu.class },
 		};
 	}
 

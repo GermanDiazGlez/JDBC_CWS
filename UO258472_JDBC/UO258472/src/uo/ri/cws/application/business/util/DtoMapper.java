@@ -392,14 +392,32 @@ public class DtoMapper {
 	}
 
     public static ProviderRecord toRecord(ProviderDto provider) {
-		ProviderRecord restult = new ProviderRecord();
-		restult.id = provider.id;
-		restult.nif = provider.nif;
-		restult.name = provider.name;
-		restult.email = provider.email;
-		restult.phone = provider.phone;
+		ProviderRecord result = new ProviderRecord();
+		result.id = provider.id;
+		result.nif = provider.nif;
+		result.name = provider.name;
+		result.email = provider.email;
+		result.phone = provider.phone;
 
-		return restult;
+		return result;
     }
 
+    public static List<ProviderDto> toDtoListProv(List<ProviderRecord> arg) {
+		List<ProviderDto> result = new ArrayList<>();
+		for (ProviderRecord pr : arg)
+			result.add(toDto(pr.id, pr.version, pr.nif, pr.name, pr.email, pr.phone));
+		return result;
+    }
+
+    public static SupplyRecord toRecord(SupplyDto supply) {
+		SupplyRecord result = new SupplyRecord();
+		result.id = supply.id;
+		result.deliveryTerm = supply.deliveryTerm;
+		result.price = supply.price;
+		result.providerId = supply.provider.id;
+		result.sparePartId = supply.sparePart.id;
+		result.version = supply.version;
+
+		return result;
+    }
 }

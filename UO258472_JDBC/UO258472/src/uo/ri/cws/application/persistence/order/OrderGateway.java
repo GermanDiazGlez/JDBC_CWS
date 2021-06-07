@@ -1,5 +1,6 @@
 package uo.ri.cws.application.persistence.order;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,4 +40,10 @@ public interface OrderGateway extends Gateway<OrderRecord> {
 	 * @param order
 	 */
 	void insertOrder(OrderToGenerateRecord order);
+
+	/**
+	 * Updates the status of the order
+	 * @param t
+	 */
+	void updateStatusAndDate(OrderRecord t) throws SQLException;
 }

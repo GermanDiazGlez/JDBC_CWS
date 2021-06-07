@@ -1,6 +1,7 @@
 package uo.ri.cws.application.persistence.provider;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.persistence.Gateway;
@@ -36,4 +37,11 @@ public interface ProviderGateway extends Gateway<ProviderRecord> {
 	 * @return
 	 */
 	Optional<ProviderRecord> findProviderByOthers(String name, String email, String phone) throws SQLException;
+
+	/**
+	 * Return a list of providers matching the name, totally or partially
+	 * @param name
+	 * @return
+	 */
+    List<ProviderRecord> findProviderByName(String name) throws SQLException;
 }

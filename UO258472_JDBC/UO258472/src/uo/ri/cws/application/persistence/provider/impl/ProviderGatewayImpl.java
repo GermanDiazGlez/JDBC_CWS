@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.persistence.provider.ProviderGateway;
 import uo.ri.cws.application.persistence.provider.ProviderRecord;
+import uo.ri.cws.application.persistence.supply.SupplyRecord;
 import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
 
@@ -171,6 +173,27 @@ public class ProviderGatewayImpl implements ProviderGateway {
 		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
 
 		return prov;
+	}
+
+	@Override
+	public List<ProviderRecord> findProviderByName(String name) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List<ProviderRecord> providers = new ArrayList<>();
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_PROVIDERS_BY_NAME"));
+
+		String name1 = "%" + name + "%";
+
+		pst.setString(1, name1);
+
+		rs = pst.executeQuery();
+
+		while (rs.next()){
+			providers.add(RecordAssembler.toProviderRecord(rs));
+		}
+
+		return providers;
 	}
 
 }

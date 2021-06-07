@@ -22,6 +22,11 @@ public interface Gateway<T> {
 	 * @param key to delete
 	 */
 	void remove(String id) throws SQLException, BusinessException;
+
+	/**
+	 * @param t
+	 * @throws SQLException
+	 */
 	/*
 	 * Updates a row
 	 * @param new data to overwrite old one

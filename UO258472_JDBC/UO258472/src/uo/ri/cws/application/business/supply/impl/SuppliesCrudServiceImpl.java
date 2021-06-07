@@ -3,14 +3,19 @@ package uo.ri.cws.application.business.supply.impl;
 import java.util.List;
 import java.util.Optional;
 
+import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.supply.SuppliesCrudService;
 import uo.ri.cws.application.business.supply.SupplyDto;
+import uo.ri.cws.application.business.supply.impl.crud.AddSupply;
+import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class SuppliesCrudServiceImpl implements SuppliesCrudService {
+	private CommandExecutor executor = new CommandExecutor();
+
 	@Override
-	public String add(SupplyDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public String add(SupplyDto dto) throws BusinessException {
+		AddSupply as = new AddSupply(dto);
+		return executor.execute(as);
 	}
 
 	@Override

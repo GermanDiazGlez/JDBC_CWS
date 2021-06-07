@@ -25,9 +25,9 @@ public class ProvidersCrudServiceImpl implements ProvidersCrudService {
 	}
 
 	@Override
-	public List<ProviderDto> findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ProviderDto> findByName(String name) throws BusinessException {
+		FindProviderByName fbn = new FindProviderByName(name);
+		return executor.execute(fbn);
 	}
 
 	@Override
