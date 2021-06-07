@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.persistence.Gateway;
+import uo.ri.cws.application.persistence.sparePart.SparePartGateway;
 
 public interface SupplyGateway extends Gateway<SupplyRecord> {
 
@@ -35,4 +36,12 @@ public interface SupplyGateway extends Gateway<SupplyRecord> {
 	 * @return
 	 */
 	List<SupplyRecord> findProvidersBySparePartId(String id) throws SQLException;
+
+	/**
+	 * Return the supply that matches with the provider and sparepart
+	 * @param idProvider
+	 * @param idSparePart
+	 * @return
+	 */
+    Optional<SupplyRecord> findSupplyByIdProviderAndIdSparePart(String idProvider, String idSparePart) throws SQLException;
 }

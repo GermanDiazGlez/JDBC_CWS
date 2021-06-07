@@ -420,4 +420,23 @@ public class DtoMapper {
 
 		return result;
     }
+
+	public static Optional<SupplyDto> toDtoCompleteSupply(Optional<SupplyRecord> arg) {
+		Optional<SupplyDto> result = arg.isEmpty()?Optional.ofNullable(null)
+				:Optional.ofNullable(toDtoSupply(arg.get().id, arg.get().deliveryTerm, arg.get().price, arg.get().version, arg.get().providerId, arg.get().sparePartId));
+		return result;
+	}
+
+	public static SupplyDto toDtoSupply(String id, int deliveryTerm, double price, Long version, String providerId, String sparePartId) {
+		SupplyDto result = new SupplyDto();
+		result.provider.id = providerId;
+		result.sparePart.id = sparePartId;
+		result.deliveryTerm = deliveryTerm;
+		result.id = id;
+		result.version = version;
+		result.price = price;
+		return result;
+	}
+
+
 }

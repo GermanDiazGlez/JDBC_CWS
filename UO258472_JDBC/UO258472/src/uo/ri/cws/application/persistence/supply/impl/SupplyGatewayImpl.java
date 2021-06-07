@@ -27,8 +27,6 @@ public class SupplyGatewayImpl implements SupplyGateway {
 			c = Jdbc.getCurrentConnection();
 
 			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BY_ID"));
-			pst.setString(1, id);
-			rs = pst.executeQuery();
 
 			pst.setString(1, id);
 
@@ -64,13 +62,26 @@ public class SupplyGatewayImpl implements SupplyGateway {
 
 	@Override
 	public void remove(String id) throws SQLException, BusinessException {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_DELETE"));
+
+		pst.setString(1, id);
+
+		pst.executeUpdate();
 	}
 
 	@Override
 	public void update(SupplyRecord t) throws SQLException {
-		// TODO Auto-generated method stub
+		PreparedStatement pst = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_UPDATE"));
+
+		pst.setDouble(1, t.price);
+		pst.setInt(2, t.deliveryTerm);
+		pst.setString(3, t.id);
+
+		pst.executeUpdate();
 		
 	}
 
@@ -126,8 +137,6 @@ public class SupplyGatewayImpl implements SupplyGateway {
 
 		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
 
-		System.out.println(supp);
-
 		return supp;
 	}
 
@@ -148,6 +157,24 @@ public class SupplyGatewayImpl implements SupplyGateway {
 		}
 
 		return providers;
+	}
+
+	@Override
+	public Optional<SupplyRecord> findSupplyByIdProviderAndIdSparePart(String idProvider, String idSparePart) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Optional<SupplyRecord> supp = null;
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BY_PROVIDER_AND_SPAREPART"));
+		pst.setString(1, idProvider);
+		pst.setString(2, idSparePart);
+		rs = pst.executeQuery();
+
+		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
+
+		System.out.println(supp);
+
+		return supp;
 	}
 
 }

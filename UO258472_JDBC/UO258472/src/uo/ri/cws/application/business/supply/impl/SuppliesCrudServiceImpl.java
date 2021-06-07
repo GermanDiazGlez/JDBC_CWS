@@ -7,6 +7,9 @@ import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.supply.SuppliesCrudService;
 import uo.ri.cws.application.business.supply.SupplyDto;
 import uo.ri.cws.application.business.supply.impl.crud.AddSupply;
+import uo.ri.cws.application.business.supply.impl.crud.DeleteSupply;
+import uo.ri.cws.application.business.supply.impl.crud.FindByNifAndCode;
+import uo.ri.cws.application.business.supply.impl.crud.UpdateSupply;
 import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class SuppliesCrudServiceImpl implements SuppliesCrudService {
@@ -19,9 +22,9 @@ public class SuppliesCrudServiceImpl implements SuppliesCrudService {
 	}
 
 	@Override
-	public void delete(String nif, String code) {
-		// TODO Auto-generated method stub
-		
+	public void delete(String nif, String code) throws BusinessException {
+		DeleteSupply ds = new DeleteSupply(nif, code);
+		executor.execute(ds);
 	}
 
 	@Override
@@ -37,15 +40,15 @@ public class SuppliesCrudServiceImpl implements SuppliesCrudService {
 	}
 
 	@Override
-	public Optional<SupplyDto> findByNifAndCode(String nif, String code) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<SupplyDto> findByNifAndCode(String nif, String code) throws BusinessException {
+		FindByNifAndCode fbnc = new FindByNifAndCode(nif, code);
+		return executor.execute(fbnc);
 	}
 
 	@Override
-	public void update(SupplyDto dto) {
-		// TODO Auto-generated method stub
-		
+	public void update(SupplyDto dto) throws BusinessException {
+		UpdateSupply us = new UpdateSupply(dto);
+		executor.execute(us);
 	}
 
 }
