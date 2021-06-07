@@ -20,14 +20,14 @@ public interface ProviderGateway extends Gateway<ProviderRecord> {
 	 * @param code
 	 * @return the ProviderRecord or null if none
 	 */
-	Optional<ProviderRecord> findProviderNameByOrderCode(String code);
+	Optional<ProviderRecord> findProviderNameByOrderCode(String code) throws SQLException;
 
 	/**
 	 * Return a ProviderRecord that matches with the name
 	 * @param name
 	 * @return the ProviderRecord or null if none
 	 */
-	Optional<ProviderRecord> findProviderNifByName(String name);
+	Optional<ProviderRecord> findProviderNifByName(String name) throws SQLException;
 
 	/**
 	 * Find if there is a provider matching with 3 at the same time

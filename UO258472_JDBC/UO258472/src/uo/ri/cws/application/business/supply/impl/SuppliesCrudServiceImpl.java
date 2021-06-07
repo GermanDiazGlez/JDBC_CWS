@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.business.BusinessException;
+import uo.ri.cws.application.business.order.impl.crud.FindByProviderNif;
 import uo.ri.cws.application.business.supply.SuppliesCrudService;
 import uo.ri.cws.application.business.supply.SupplyDto;
-import uo.ri.cws.application.business.supply.impl.crud.AddSupply;
-import uo.ri.cws.application.business.supply.impl.crud.DeleteSupply;
-import uo.ri.cws.application.business.supply.impl.crud.FindByNifAndCode;
-import uo.ri.cws.application.business.supply.impl.crud.UpdateSupply;
+import uo.ri.cws.application.business.supply.impl.crud.*;
 import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class SuppliesCrudServiceImpl implements SuppliesCrudService {
@@ -28,15 +26,15 @@ public class SuppliesCrudServiceImpl implements SuppliesCrudService {
 	}
 
 	@Override
-	public List<SupplyDto> findByProviderNif(String nif) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SupplyDto> findByProviderNif(String nif) throws BusinessException {
+		FindSuppliesByProviderNif fbp = new FindSuppliesByProviderNif(nif);
+		return executor.execute(fbp);
 	}
 
 	@Override
-	public List<SupplyDto> findBySparePartCode(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SupplyDto> findBySparePartCode(String sparePartCode) throws BusinessException {
+		FindSuppliesBySparePartCode fbc = new FindSuppliesBySparePartCode(sparePartCode);
+		return executor.execute(fbc);
 	}
 
 	@Override

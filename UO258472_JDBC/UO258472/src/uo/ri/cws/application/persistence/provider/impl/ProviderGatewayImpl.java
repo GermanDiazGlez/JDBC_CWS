@@ -103,56 +103,37 @@ public class ProviderGatewayImpl implements ProviderGateway {
 	}
 
 	@Override
-	public Optional<ProviderRecord> findProviderNameByOrderCode(String code) {
+	public Optional<ProviderRecord> findProviderNameByOrderCode(String code) throws SQLException {
 		Connection c = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<ProviderRecord> prov = null;
-
-		try {
-			c = Jdbc.getCurrentConnection();
 			
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_ORDER_CODE"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_BY_ORDER_CODE"));
 
-			pst.setString(1, code);
+		pst.setString(1, code);
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
+		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
+
 		return prov;
 	}
 
 	@Override
-	public Optional<ProviderRecord> findProviderNifByName(String name) {
-		Connection c = null;
+	public Optional<ProviderRecord> findProviderNifByName(String name) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<ProviderRecord> prov = null;
-
-		try {
-			c = Jdbc.getCurrentConnection();
 			
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_NIF_BY_NAME"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TPROVIDERS_FIND_NIF_BY_NAME"));
 
-			pst.setString(1, name);
+		pst.setString(1, name);
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
+		prov = rs.next() ? Optional.of(RecordAssembler.toProviderRecord(rs)) : Optional.empty();
+
 		return prov;
 	}
 

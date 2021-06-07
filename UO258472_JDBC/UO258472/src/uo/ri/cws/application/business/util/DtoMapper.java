@@ -439,4 +439,11 @@ public class DtoMapper {
 	}
 
 
+    public static List<SupplyDto> toDto(List<SupplyRecord> arg) {
+		List<SupplyDto> result = new ArrayList<>();
+		for (SupplyRecord sr : arg) {
+			result.add(toDtoSupply(sr.id, sr.deliveryTerm, sr.price, sr.version, sr.providerId, sr.sparePartId));
+		}
+		return result;
+    }
 }

@@ -13,7 +13,7 @@ public interface SparePartGateway extends Gateway<SparePartRecord> {
 	 * @param code
 	 * @return SparepartRecord or null if none
 	 */
-	Optional<SparePartRecord> findByCode(String code);
+	Optional<SparePartRecord> findByCode(String code) throws SQLException;
 
     @Override
     default void update(SparePartRecord partRecord) throws SQLException {
@@ -25,17 +25,17 @@ public interface SparePartGateway extends Gateway<SparePartRecord> {
 	 * @param id
 	 * @return SparePartRecord or null if none
 	 */
-	Optional<SparePartRecord> findById(String id);
+	Optional<SparePartRecord> findById(String id) throws SQLException;
 
 	/**
 	 * Returns the SparePart that matches with the code if exists
 	 * @param code
 	 * @return
 	 */
-    Optional<SparePartRecord> isPresent(String code);
+    Optional<SparePartRecord> isPresent(String code) throws SQLException;
 
 	/**
 	 * @return the spare parts which stock is under the minimum
 	 */
-    List<SparePartRecord> findUnderStock();
+    List<SparePartRecord> findUnderStock() throws SQLException;
 }

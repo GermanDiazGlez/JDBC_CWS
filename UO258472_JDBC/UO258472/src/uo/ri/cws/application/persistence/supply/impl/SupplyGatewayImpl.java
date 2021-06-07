@@ -17,29 +17,19 @@ import uo.ri.cws.application.persistence.util.RecordAssembler;
 public class SupplyGatewayImpl implements SupplyGateway {
 
 	@Override
-	public Optional<SupplyRecord> findById(String id) {
-		Connection c = null;
+	public Optional<SupplyRecord> findById(String id) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<SupplyRecord> supp = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BY_ID"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_BY_ID"));
+		pst.setString(1, id);
 
-			pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
 
-			supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return supp;
 	}
 
@@ -172,9 +162,26 @@ public class SupplyGatewayImpl implements SupplyGateway {
 
 		supp = rs.next() ? Optional.of(RecordAssembler.toSupplyRecord(rs)) : Optional.empty();
 
-		System.out.println(supp);
-
 		return supp;
 	}
+
+    @Override
+    public List<SupplyRecord> findSparePartIdsByIdProvider(String providerId) throws SQLException {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List<SupplyRecord> supplies = new ArrayList<>();
+
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_IDS_BY_PROVIDER_ID"));
+
+		pst.setString(1, providerId);
+
+		rs = pst.executeQuery();
+
+		while (rs.next()){
+			supplies.add(RecordAssembler.toSupplyRecord(rs));
+		}
+
+		return supplies;
+    }
 
 }

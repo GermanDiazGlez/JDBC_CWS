@@ -44,4 +44,6 @@ public interface SupplyGateway extends Gateway<SupplyRecord> {
 	 * @return
 	 */
     Optional<SupplyRecord> findSupplyByIdProviderAndIdSparePart(String idProvider, String idSparePart) throws SQLException;
+
+	List<SupplyRecord> findSparePartIdsByIdProvider(String providerId) throws SQLException;
 }
