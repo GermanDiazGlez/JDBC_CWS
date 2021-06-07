@@ -23,7 +23,7 @@ public class FindByDescription implements Command<List<SparePartReportDto>> {
 	
 	
 	@Override
-	public List<SparePartReportDto> execute() throws BusinessException, SQLException {
+	public List<SparePartReportDto> execute() throws SQLException {
 		List<SparePartReportDto> spareParts;
 		SparePartReportGateway spg = PersistenceFactory.forSparePartReport();
 

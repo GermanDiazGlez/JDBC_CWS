@@ -44,11 +44,7 @@ public class GenerateOrders implements Command<List<OrderDto>>{
 
 	@Override
 	public List<OrderDto> execute() throws BusinessException, SQLException {
-		System.out.println("HOla");
 		List<SparePartRecord> parts = sparePartGateway.findUnderStock();
-
-
-
 		List<OrderDto> orders = new ArrayList<>();
 
 		for(SparePartRecord p : parts){
