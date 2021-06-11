@@ -43,6 +43,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		if (! checkWorkOrdersFinished(workOrderIds) )
 			throw new BusinessException ("Workorder is not finished yet");
 
+		System.out.println("hola2221");
 
 		long numberInvoice = invoiceGateway.getNextInvoiceNumber();
 		LocalDate dateInvoice = LocalDate.now();
@@ -59,9 +60,9 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		invoice.total=total;
 		invoice.status=status;
 
-		//llamar al add de invoice gateway que devuelve void
+		createInvoice(invoice);
 
-		String idInvoice = createInvoice(invoice);
+		String idInvoice = invoice.id;
 
 		linkWorkordersToInvoice(idInvoice, workOrderIds);
 		markWorkOrderAsInvoiced(workOrderIds);
@@ -142,10 +143,9 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * Creates the invoice in the database; returns the id
 	 */
-	private String createInvoice(InvoiceRecord invoice) throws SQLException {
+	private void createInvoice(InvoiceRecord invoice) throws SQLException {
 		invoiceGateway.add(invoice);
 
-		return invoice.id; 
 	}
 
 	/*

@@ -73,15 +73,28 @@ public class RecordAssembler {
 		WorkOrderRecord result = new WorkOrderRecord();
 		
 		result.id = rs.getString("id");
-		result.vehicleId = rs.getString( "vehicle_Id");
-		result.description = rs.getString( "description");
-		result.date = rs.getDate( "date");
 		result.total = rs.getLong("amount");
+		result.date = rs.getDate( "date");
+		result.description = rs.getString( "description");
 		result.status = rs.getString( "status");
+		result.version = rs.getLong("version");
+		result.vehicleId = rs.getString( "vehicle_Id");
 
 		// might be null
 		result.mechanicId = rs.getString( "mechanic_Id");
 		result.invoiceId = rs.getString( "invoice_Id");
+
+		return result;
+	}
+
+	public static WorkOrderRecord toWorkOrderRecordInvoice ( ResultSet rs ) throws SQLException {
+		WorkOrderRecord result = new WorkOrderRecord();
+
+		result.id = rs.getString("id");
+		result.description = rs.getString( "description");
+		result.date = rs.getDate( "date");
+		result.total = rs.getLong("amount");
+		result.status = rs.getString( "status");
 
 		return result;
 	}
@@ -93,6 +106,14 @@ public class RecordAssembler {
 		List<WorkOrderRecord> res = new ArrayList<>();
 		while(rs.next()) {
 			res.add( toWorkOrderRecord( rs ) );
+		}
+		return res;
+	}
+
+	public static List<WorkOrderRecord> toWorkOrderInvoiceRecordList(ResultSet rs) throws SQLException {
+		List<WorkOrderRecord> res = new ArrayList<>();
+		while(rs.next()) {
+			res.add( toWorkOrderRecordInvoice( rs ) );
 		}
 		return res;
 	}

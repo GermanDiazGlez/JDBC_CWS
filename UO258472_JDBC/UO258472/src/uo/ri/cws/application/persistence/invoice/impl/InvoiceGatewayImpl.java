@@ -16,27 +16,22 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 
 	@Override
 	public void add(InvoiceRecord iR) throws SQLException {
-		Connection c = null;
 		PreparedStatement pst = null;
 		String idInvoice;
 
-		try {
-			c = Jdbc.getCurrentConnection();
-			idInvoice = UUID.randomUUID().toString();
+		iR.id = UUID.randomUUID().toString();
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TINVOICES_INSERT"));
-			pst.setString(1, idInvoice);
-			pst.setLong(2, iR.number);
-			pst.setDate(3, java.sql.Date.valueOf(iR.date));
-			pst.setDouble(4, iR.vat);
-			pst.setDouble(5, iR.total);
-			pst.setString(6, "NOT_YET_PAID");
+		System.out.println(iR.id);
 
-			pst.executeUpdate();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_INSERT"));
+		pst.setString(1, iR.id);
+		pst.setLong(2, iR.number);
+		pst.setDate(3, java.sql.Date.valueOf(iR.date));
+		pst.setDouble(4, iR.vat);
+		pst.setDouble(5, iR.total);
+		pst.setString(6, "NOT_YET_PAID");
 
-		} finally {
-			Jdbc.close(pst);
-		}
+		pst.executeUpdate();
 
 	}
 
@@ -75,19 +70,14 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
-		try {
-			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_GET_NEXT_INVOICE_NUMBER"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_GET_NEXT_INVOICE_NUMBER"));
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			if(rs.next()){
-				return rs.getLong(1) + 1;
-			} else {
-				return 1L;
-			}
-
-		} finally {
-			Jdbc.close(rs, pst);
+		if(rs.next()){
+			return rs.getLong(1) + 1;
+		} else {
+			return 1L;
 		}
 	}
 

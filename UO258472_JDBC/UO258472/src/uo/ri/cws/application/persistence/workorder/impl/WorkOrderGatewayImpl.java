@@ -31,26 +31,19 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 	public void update(WorkOrderRecord t) throws SQLException {
 		PreparedStatement pst = null;
 
-		try {
-			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_UPDATE"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_UPDATE"));
 
-			if (t.invoiceId == null)
-				t.invoiceId = findById(t.id).get().invoiceId;
+		if (t.invoiceId == null)
+			t.invoiceId = findById(t.id).get().invoiceId;
 
-			if (t.status == null)
-				t.status = findById(t.id).get().status;
+		if (t.status == null)
+			t.status = findById(t.id).get().status;
 
-			pst.setString(1, t.invoiceId);
-			pst.setString(2, t.status);
-			pst.setString(3, t.id);
+		pst.setString(1, t.invoiceId);
+		pst.setString(2, t.status);
+		pst.setString(3, t.id);
 
-			pst.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			Jdbc.close(pst);
-		}
+		pst.executeUpdate();
 
 	}
 
@@ -61,15 +54,15 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 		Optional<WorkOrderRecord> record = null;
 
-		try{
-			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_FIND_WORKORDERS"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_FIND_WORKORDERS"));
 
-			rs = pst.executeQuery();
+		pst.setString(1, id);
 
-			record = Optional.ofNullable(RecordAssembler.toWorkOrderRecord(rs));
-		} finally {
-			Jdbc.close(rs, pst);
-		}
+		rs = pst.executeQuery();
+
+
+		record = rs.next() ? Optional.of(RecordAssembler.toWorkOrderRecord(rs)) : Optional.empty();
+
 		return record;
 	}
 
@@ -81,7 +74,6 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 	@Override
 	public List<WorkOrderRecord> findByIds(List<String> workOrderIds) throws SQLException {
-
 		List<WorkOrderRecord> listRecord = new ArrayList<>();
 
 		for (String workOrderID : workOrderIds) {
@@ -116,18 +108,14 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 		List<WorkOrderRecord> invoices = new ArrayList<>();
 
-		try{
-			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_FIND_NOT_INVOICED"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TWORKORDERS_FIND_NOT_INVOICED"));
 
-			pst.setString(1, dni);
+		pst.setString(1, dni);
 
-			rs = pst.executeQuery();
+		rs = pst.executeQuery();
 
-			invoices = RecordAssembler.toWorkOrderRecordList(rs);
+		invoices = RecordAssembler.toWorkOrderInvoiceRecordList(rs);
 
-		} finally {
-			Jdbc.close(rs, pst);
-		}
 		return invoices;
 	}
 

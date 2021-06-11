@@ -3,7 +3,7 @@ package uo.ri.cws.application.business.util;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
-
+import java.sql.Date;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
 import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
@@ -446,4 +446,28 @@ public class DtoMapper {
 		}
 		return result;
     }
+
+	//WorkOrders
+    public static List<InvoicingWorkOrderDto> toDtoListInvoice(List<WorkOrderRecord> arg) {
+		List<InvoicingWorkOrderDto> result = new ArrayList<>();
+		for (WorkOrderRecord wo: arg) {
+			int year = wo.date.getYear();
+			int month = wo.date.getMonth();
+			int day = wo.date.getDay();
+			LocalDate lDate = LocalDate.of(year, month, day);
+			result.add(toDtoInvoicingWorkOrder(wo.id, wo.description, lDate, wo.status, wo.total));
+		}
+		return result;
+    }
+
+	private static InvoicingWorkOrderDto toDtoInvoicingWorkOrder(String id, String description, LocalDate date, String status, double total) {
+		InvoicingWorkOrderDto result = new InvoicingWorkOrderDto();
+		result.id = id;
+		result.description = description;
+		result.date = date;
+		result.status = status;
+		result.total = total;
+		return result;
+	}
+
 }

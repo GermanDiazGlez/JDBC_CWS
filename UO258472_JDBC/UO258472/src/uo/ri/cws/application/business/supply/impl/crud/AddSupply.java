@@ -3,13 +3,16 @@ package uo.ri.cws.application.business.supply.impl.crud;
 import alb.util.assertion.Argument;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
+import uo.ri.cws.application.business.sparePart.SparePartDto;
 import uo.ri.cws.application.business.supply.SupplyDto;
 import uo.ri.cws.application.business.util.BusinessCheck;
 import uo.ri.cws.application.business.util.DtoMapper;
 import uo.ri.cws.application.business.util.command.Command;
 import uo.ri.cws.application.persistence.PersistenceFactory;
 import uo.ri.cws.application.persistence.provider.ProviderGateway;
+import uo.ri.cws.application.persistence.provider.ProviderRecord;
 import uo.ri.cws.application.persistence.sparePart.SparePartGateway;
+import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
 import uo.ri.cws.application.persistence.supply.SupplyGateway;
 
 import java.sql.SQLException;
@@ -37,9 +40,15 @@ public class AddSupply implements Command<String> {
 
         BusinessCheck.isTrue(!pg.findProviderByNif(supply.provider.nif).isEmpty(), "There is not an provider with that nif");
         BusinessCheck.isTrue(!spg.findByCode(supply.sparePart.code).isEmpty(), "There is not an sparePart with that code");
-        supply.sparePart.id = spg.findByCode(supply.sparePart.code).get().id;
+        SparePartRecord sp = spg.findByCode(supply.sparePart.code).get();
+        supply.sparePart.id = sp.id;
+        supply.sparePart.description = sp.description;
+        supply.sparePart.code = sp.code;
 
-        supply.provider.id = pg.findProviderByNif(supply.provider.nif).get().id;
+        ProviderRecord p = pg.findProviderByNif(supply.provider.nif).get();
+        supply.provider.id = p.id;
+        supply.provider.nif = p.nif;
+        supply.provider.name = p.name;
         supply.id = UUID.randomUUID().toString();
 
         sg.add(DtoMapper.toRecord(supply));

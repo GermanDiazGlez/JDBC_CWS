@@ -11,6 +11,7 @@ import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.invoice.PaymentMeanDto;
 import uo.ri.cws.application.business.invoice.create.commands.CreateInvoice;
 //import uo.ri.cws.application.business.invoice.create.commands.FindNotInvoicedWorkOrders;
+import uo.ri.cws.application.business.invoice.create.commands.FindNotInvoicedWorkOrders;
 import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 public class InvoicingServiceImpl implements InvoicingService {
@@ -24,8 +25,7 @@ public class InvoicingServiceImpl implements InvoicingService {
 
 	@Override
 	public List<InvoicingWorkOrderDto> findWorkOrdersByClientDni(String dni) throws BusinessException {
-		//return executor.execute(new FindNotInvoicedWorkOrders(dni));
-		return null;
+		return executor.execute(new FindNotInvoicedWorkOrders(dni));
 	}
 
 	@Override

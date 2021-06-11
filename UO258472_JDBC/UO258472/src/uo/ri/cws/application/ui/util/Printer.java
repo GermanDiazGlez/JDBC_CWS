@@ -4,6 +4,7 @@ import java.util.List;
 
 import alb.util.console.Console;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
+import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.invoice.PaymentMeanDto;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
 import uo.ri.cws.application.business.order.OrderDto;
@@ -141,6 +142,20 @@ public class Printer {
 				, s.deliveryTerm
 			);
 	}
-	
+
+	public static void print(InvoicingWorkOrderDto s) {
+		Console.printf("\t%-10.10s %-30.30s %-10.10s %6.2f € %-30.30s\n"
+				, s.date.toString().replace("01", "20")
+				, s.description
+				, s.status
+				, s.total
+				, s.id
+		);
+	}
+
+	public static void printInvoices(List<InvoicingWorkOrderDto> invoices) {
+		for (InvoicingWorkOrderDto dto : invoices)
+			print(dto);
+	}
 
 }

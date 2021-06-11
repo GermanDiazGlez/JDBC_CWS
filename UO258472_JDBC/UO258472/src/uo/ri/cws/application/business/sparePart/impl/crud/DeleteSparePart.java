@@ -34,9 +34,9 @@ public class DeleteSparePart implements Command<Void>{
 
 		BusinessCheck.isTrue(spg.findByCode(code).isPresent(), "This spare part does not exist");
 		SparePartDto sparePart = DtoMapper.toDto(spg.findByCode(code).get());
-		BusinessCheck.isTrue(!sbg.findBySparePartId(sparePart.id).isPresent(), "Esta spare part esta siendo utilizada en substitution");
-		BusinessCheck.isTrue(!og.findBySparePartCode(code).isPresent(), "Esta spare part esta siendo utilizada en una order");
-		BusinessCheck.isTrue(!syg.findBySparePartId(sparePart.id).isPresent(), "Esta spare part esta siendo utilizada en supplies");
+		BusinessCheck.isTrue(!sbg.findBySparePartId(sparePart.id).isPresent(), "This spare part has suppliers");
+		BusinessCheck.isTrue(!og.findBySparePartCode(code).isPresent(), "This spare part is involved in an order");
+		BusinessCheck.isTrue(!syg.findBySparePartId(sparePart.id).isPresent(), "This spare part has suppliers");
 		
 		spg.remove(code);
 

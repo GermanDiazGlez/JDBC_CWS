@@ -12,6 +12,10 @@ import uo.ri.cws.application.business.BusinessException;
  * @param <T>
  */
 public interface Gateway<T> {
+	/**
+	 * @param t
+	 * @throws SQLException
+	 */
 	/*
 	 * Adds a new item to the table 
 	 * @param new item 
