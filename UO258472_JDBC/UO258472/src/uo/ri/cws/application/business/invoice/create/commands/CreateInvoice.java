@@ -6,11 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import alb.util.assertion.Argument;
 import alb.util.console.Console;
 import alb.util.jdbc.Jdbc;
 import alb.util.math.Round;
+import jdk.swing.interop.SwingInterOpUtils;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
 import uo.ri.cws.application.business.util.DtoMapper;
@@ -58,12 +60,11 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		invoice.vat=vat;
 		invoice.total=total;
 		invoice.status=status;
+		invoice.id = UUID.randomUUID().toString();
 
 		createInvoice(invoice);
 
-		String idInvoice = invoice.id;
-
-		linkWorkordersToInvoice(idInvoice, workOrderIds);
+		linkWorkordersToInvoice(invoice.id, workOrderIds);
 		markWorkOrderAsInvoiced(workOrderIds);
 
 		return DtoMapper.toDto(invoice);
@@ -89,12 +90,13 @@ public class CreateInvoice implements Command<InvoiceDto> {
 			if (!workOrderID.equals(null) && !workOrderID.trim().equals("")) {
 				if (workOrderGateway.findById(workOrderID).isPresent()) {
 					String status = workOrderGateway.findById(workOrderID).get().status;
-					if (!"FINISHED".equalsIgnoreCase(status))
-						return false;
+					if (status.equals("FINISHED")) {
+						return true;
+					}
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/*
@@ -136,7 +138,6 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	 */
 	private void createInvoice(InvoiceRecord invoice) throws SQLException {
 		invoiceGateway.add(invoice);
-
 	}
 
 	/*

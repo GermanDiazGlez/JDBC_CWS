@@ -19,8 +19,6 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 		PreparedStatement pst = null;
 		String idInvoice;
 
-		iR.id = UUID.randomUUID().toString();
-
 		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_INSERT"));
 		pst.setString(1, iR.id);
 		pst.setLong(2, iR.number);
@@ -28,9 +26,9 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 		pst.setDouble(4, iR.vat);
 		pst.setDouble(5, iR.total);
 		pst.setString(6, "NOT_YET_PAID");
+		pst.setInt(7, 1);
 
 		pst.executeUpdate();
-
 	}
 
 	@Override

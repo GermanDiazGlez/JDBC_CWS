@@ -20,16 +20,8 @@ public class ListByProviderAction implements Action {
 
 			OrdersService service = BusinessFactory.forOrdersService();
 			List<OrderDto> orders = service.findByProviderNif(nif);
-			for (OrderDto o : orders) {
-				System.out.println(o.orderedDate);
-			}
 
 			orders.sort( new OrdersComparator() );
-
-			System.out.println("Despuesde ordenar");
-			for (OrderDto o : orders) {
-				System.out.println(o.orderedDate);
-			}
 
 			for(OrderDto o: orders) {
 				Printer.printSummary(o);
@@ -45,7 +37,7 @@ public class ListByProviderAction implements Action {
 		public int compare(OrderDto o1, OrderDto o2) {
 			int diff = o1.status.compareTo( o2.status );
 			if ( diff == 0) {
-				diff = o1.orderedDate.compareTo( o2.orderedDate );
+				diff = o2.orderedDate.compareTo( o1.orderedDate );
 			}
 			return diff;
 		}

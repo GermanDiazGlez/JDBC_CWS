@@ -346,6 +346,16 @@ public class DtoMapper {
 		return result;
 	}
 
+	public static SupplyDto toDtoSupplyComplete(SupplyRecord arg) {
+		SupplyDto result = new SupplyDto();
+		result.id = arg.id;
+		result.deliveryTerm = arg.deliveryTerm;
+		result.sparePart.id = arg.sparePartId;
+		result.provider.id = arg.providerId;
+		result.price = arg.price;
+		return result;
+	}
+
 	public static SupplyDto toDto(String provider_id, double price) {
 		SupplyDto result = new SupplyDto();
 		result.provider.id = provider_id;
