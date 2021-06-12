@@ -6,32 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import alb.util.random.Random;
-import org.junit.jupiter.api.Order;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.order.OrderDto;
-import uo.ri.cws.application.business.provider.ProviderDto;
-import uo.ri.cws.application.business.sparePart.SparePartDto;
-import uo.ri.cws.application.business.supply.SupplyDto;
 import uo.ri.cws.application.business.util.DtoMapper;
 import uo.ri.cws.application.business.util.command.Command;
 import uo.ri.cws.application.persistence.PersistenceFactory;
 import uo.ri.cws.application.business.order.OrderDto.OrderLineDto;
 import uo.ri.cws.application.persistence.order.OrderGateway;
-import uo.ri.cws.application.persistence.order.impl.OrderGatewayImpl;
 import uo.ri.cws.application.persistence.orderLines.OrderLinesGateway;
 import uo.ri.cws.application.persistence.provider.ProviderGateway;
 import uo.ri.cws.application.persistence.provider.ProviderRecord;
-import uo.ri.cws.application.persistence.provider.impl.ProviderGatewayImpl;
 import uo.ri.cws.application.persistence.sparePart.SparePartGateway;
 import uo.ri.cws.application.persistence.sparePart.SparePartRecord;
-import uo.ri.cws.application.persistence.sparePart.SparePartReportGateway;
-import uo.ri.cws.application.persistence.sparePart.impl.SparePartGatewayImpl;
 import uo.ri.cws.application.persistence.supply.SupplyGateway;
 import uo.ri.cws.application.persistence.supply.SupplyRecord;
-import uo.ri.cws.application.persistence.supply.impl.SupplyGatewayImpl;
-import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class GenerateOrders implements Command<List<OrderDto>>{
 

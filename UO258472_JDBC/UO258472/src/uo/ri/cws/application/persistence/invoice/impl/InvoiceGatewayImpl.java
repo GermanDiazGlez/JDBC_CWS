@@ -21,8 +21,6 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 
 		iR.id = UUID.randomUUID().toString();
 
-		System.out.println(iR.id);
-
 		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TINVOICES_INSERT"));
 		pst.setString(1, iR.id);
 		pst.setLong(2, iR.number);

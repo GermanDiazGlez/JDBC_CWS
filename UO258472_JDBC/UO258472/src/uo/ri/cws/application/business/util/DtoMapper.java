@@ -374,6 +374,7 @@ public class DtoMapper {
 		result.code = dto.code;
 		result.id = dto.id;
 		result.orderedDate = dto.orderedDate;
+		result.receptionDate = dto.receptionDate;
 		result.amount = dto.amount;
 		result.providerId = dto.provider.id;
 		result.status = dto.status;

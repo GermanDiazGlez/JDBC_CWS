@@ -34,7 +34,6 @@ public class FindByCode implements Command<Optional<OrderDto>>{
 		ProviderGateway pg = PersistenceFactory.forProviders();
 
 		BusinessCheck.isTrue(og.findByCode(code).isPresent(), "That code is not an order code");
-		
 		OrderDto order = DtoMapper.toDtoOr(og.findByCode(code)).get();
 		
 		ProviderDto provider = DtoMapper.toDto(pg.findProviderNameByOrderCode(code).get());

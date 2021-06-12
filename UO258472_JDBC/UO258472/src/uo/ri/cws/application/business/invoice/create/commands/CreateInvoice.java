@@ -30,6 +30,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 
 	public CreateInvoice(List<String> workOrderIds) {
 		Argument.isNotNull(workOrderIds,"The workOrderIds cant be null");
+		Argument.isTrue(!workOrderIds.isEmpty(),"Work order ids cant be empty");
 		for (String work: workOrderIds) {
 			Argument.isTrue(work.trim().length()!=0, "The workOrderIds cant be a blank");
 		}
@@ -42,8 +43,6 @@ public class CreateInvoice implements Command<InvoiceDto> {
 			throw new BusinessException ("Workorder does not exist");
 		if (! checkWorkOrdersFinished(workOrderIds) )
 			throw new BusinessException ("Workorder is not finished yet");
-
-		System.out.println("hola2221");
 
 		long numberInvoice = invoiceGateway.getNextInvoiceNumber();
 		LocalDate dateInvoice = LocalDate.now();
@@ -67,13 +66,6 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		linkWorkordersToInvoice(idInvoice, workOrderIds);
 		markWorkOrderAsInvoiced(workOrderIds);
 
-		displayInvoice(numberInvoice, dateInvoice, amount, vat, total);
-		invoice.id = idInvoice;
-		invoice.total = total;
-		invoice.vat = vat;
-		invoice.number = numberInvoice;
-		invoice.date = dateInvoice;
-
 		return DtoMapper.toDto(invoice);
 	}
 
@@ -94,7 +86,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	 */
 	private boolean checkWorkOrdersFinished(List<String> workOrderIDS) throws SQLException, BusinessException {
 		for (String workOrderID : workOrderIDS) {
-			if (!workOrderID.trim().equals("") && !workOrderID.equals(null)) {
+			if (!workOrderID.equals(null) && !workOrderID.trim().equals("")) {
 				if (workOrderGateway.findById(workOrderID).isPresent()) {
 					String status = workOrderGateway.findById(workOrderID).get().status;
 					if (!"FINISHED".equalsIgnoreCase(status))
@@ -102,7 +94,6 @@ public class CreateInvoice implements Command<InvoiceDto> {
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -178,17 +169,6 @@ public class CreateInvoice implements Command<InvoiceDto> {
 
 			workOrderGateway.update(record);
 		}
-	}
-
-
-	private void displayInvoice(long numberInvoice, LocalDate dateInvoice,
-			double totalInvoice, double vat, double totalConIva) {
-
-		Console.printf("Invoice number: %d\n", numberInvoice);
-		Console.printf("\tDate: %1$td/%1$tm/%1$tY\n", dateInvoice);
-		Console.printf("\tAmount: %.2f €\n", totalInvoice);
-		Console.printf("\tVAT: %.1f %% \n", vat);
-		Console.printf("\tTotal (including VAT): %.2f €\n", totalConIva);
 	}
 
 }

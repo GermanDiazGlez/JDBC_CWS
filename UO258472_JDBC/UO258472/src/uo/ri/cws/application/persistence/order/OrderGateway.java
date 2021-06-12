@@ -13,33 +13,33 @@ public interface OrderGateway extends Gateway<OrderRecord> {
 	 * @param code
 	 * @return OrderRecord or null if none
 	 */
-	Optional<OrderRecord> findByCode(String code);
+	Optional<OrderRecord> findByCode(String code) throws SQLException;
 
 	/**
 	 * Return the OrderRecord that corresponds with the SparePartCode
 	 * @param code
 	 * @return OrderRecord or null if none
 	 */
-	Optional<OrderRecord> findBySparePartCode(String code);
+	Optional<OrderRecord> findBySparePartCode(String code) throws SQLException;
 
 	/**
 	 * Return a list of OrderRecord which correspond with the providerNif
 	 * @param providerNIF
 	 * @return OrderRecord list
 	 */
-	List<OrderRecord> findOrdersByProviderNif(String providerNIF);
+	List<OrderRecord> findOrdersByProviderNif(String providerNIF) throws SQLException;
 
 	/**
 	 * Return a list of OrderToGenerateRecord that have less stock than the minStock
 	 * @return OrderToGenerateRecord list
 	 */
-	List<OrderToGenerateRecord> getOrdersToGenerate();
+	List<OrderToGenerateRecord> getOrdersToGenerate() throws SQLException;
 
 	/**
 	 * Method that inserts the orders generated
 	 * @param order
 	 */
-	void insertOrder(OrderToGenerateRecord order);
+	void insertOrder(OrderToGenerateRecord order) throws SQLException;
 
 	/**
 	 * Updates the status of the order

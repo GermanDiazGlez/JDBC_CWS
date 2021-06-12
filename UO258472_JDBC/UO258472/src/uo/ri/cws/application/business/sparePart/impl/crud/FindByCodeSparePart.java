@@ -25,12 +25,9 @@ public class FindByCodeSparePart implements Command<Optional<SparePartReportDto>
 	@Override
 	public Optional<SparePartReportDto> execute() throws SQLException {
 		SparePartReportGateway spg = PersistenceFactory.forSparePartReport();
-
 		if(spg.isPresent(code).isPresent()){
-			System.out.println("isPresent");
-			return DtoMapper.toDtoSPRep(spg.findByCode(code));
+			return DtoMapper.toDtoSPRep(spg.isPresent(code));
 		} else {
-			System.out.println("isNotPresent");
 			return Optional.empty();
 		}
 

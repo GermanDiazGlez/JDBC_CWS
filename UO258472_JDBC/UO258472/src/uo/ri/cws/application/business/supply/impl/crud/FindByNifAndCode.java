@@ -2,6 +2,8 @@ package uo.ri.cws.application.business.supply.impl.crud;
 
 import alb.util.assertion.Argument;
 import uo.ri.cws.application.business.BusinessException;
+import uo.ri.cws.application.business.provider.ProviderDto;
+import uo.ri.cws.application.business.sparePart.SparePartDto;
 import uo.ri.cws.application.business.supply.SupplyDto;
 import uo.ri.cws.application.business.util.BusinessCheck;
 import uo.ri.cws.application.business.util.DtoMapper;
@@ -30,7 +32,7 @@ public class FindByNifAndCode implements Command<Optional<SupplyDto>> {
 
     @Override
     public Optional<SupplyDto> execute() throws BusinessException, SQLException {
-        Optional<SupplyDto> supply;
+
         SupplyGateway sg = PersistenceFactory.forSupplies();
         ProviderGateway pg = PersistenceFactory.forProviders();
         SparePartGateway spg = PersistenceFactory.forSparePart();
@@ -38,11 +40,16 @@ public class FindByNifAndCode implements Command<Optional<SupplyDto>> {
         BusinessCheck.isTrue(pg.findProviderByNif(nif).isPresent(), "This provider does not exist");
         BusinessCheck.isTrue(spg.findByCode(code).isPresent(), "This sparePart does not exist");
 
-        String idProvider = pg.findProviderByNif(nif).get().id;
-        String idSparePart = spg.findByCode(code).get().id;
+        ProviderDto provider = DtoMapper.toDto(pg.findProviderByNif(nif).get());
+        SparePartDto sparePart = DtoMapper.toDto(spg.findByCode(code).get());
 
-        BusinessCheck.isTrue(sg.findSupplyByIdProviderAndIdSparePart(idProvider, idSparePart).isPresent(), "This supply does not exist");
-        supply = DtoMapper.toDtoCompleteSupply(sg.findSupplyByIdProviderAndIdSparePart(idProvider, idSparePart));
+        BusinessCheck.isTrue(sg.findSupplyByIdProviderAndIdSparePart(provider.id, sparePart.id).isPresent(), "This supply does not exist");
+        Optional<SupplyDto> supply = DtoMapper.toDtoCompleteSupply(sg.findSupplyByIdProviderAndIdSparePart(provider.id, sparePart.id));
+
+        supply.get().sparePart.code = sparePart.code;
+        supply.get().sparePart.description = sparePart.description;
+        supply.get().provider.nif = provider.nif;
+        supply.get().provider.name = provider.name;
 
         return supply;
     }

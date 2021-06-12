@@ -40,7 +40,13 @@ public class AddSupply implements Command<String> {
 
         BusinessCheck.isTrue(!pg.findProviderByNif(supply.provider.nif).isEmpty(), "There is not an provider with that nif");
         BusinessCheck.isTrue(!spg.findByCode(supply.sparePart.code).isEmpty(), "There is not an sparePart with that code");
+        ProviderRecord pr = pg.findProviderByNif(supply.provider.nif).get();
         SparePartRecord sp = spg.findByCode(supply.sparePart.code).get();
+
+        if(sg.findSupplyByIdProviderAndIdSparePart(pr.id, sp.id).isPresent()){
+            throw new BusinessException("This sparepart is already suplied by this provider");
+        }
+
         supply.sparePart.id = sp.id;
         supply.sparePart.description = sp.description;
         supply.sparePart.code = sp.code;

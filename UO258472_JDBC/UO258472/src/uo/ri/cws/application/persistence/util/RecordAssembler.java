@@ -318,6 +318,7 @@ public class RecordAssembler {
 		OrderLinesRecord dto = new OrderLinesRecord();
 		dto.price = m.getDouble("price");
 		dto.quantity = m.getInt("quantity");
+		dto.sparepart_id = m.getString("sparepart_id");
 		
 		dto.code = m.getString("code");
 		dto.description = m.getString("description");

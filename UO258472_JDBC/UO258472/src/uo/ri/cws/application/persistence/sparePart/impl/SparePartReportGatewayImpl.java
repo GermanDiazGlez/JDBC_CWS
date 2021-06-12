@@ -15,70 +15,48 @@ import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class SparePartReportGatewayImpl implements SparePartReportGateway {
 	@Override
-	public Optional<SparePartReportRecord> findByCode(String code) {
-		Connection c = null;
+	public Optional<SparePartReportRecord> findByCode(String code) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		PreparedStatement pst2 = null;
 		ResultSet rs2 = null;
 		Optional<SparePartReportRecord> part = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_BY_CODE"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_BY_CODE"));
+		pst.setString(1, code);
 
-			pst.setString(1, code);
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		part = rs.next() ? Optional.of(RecordAssembler.toSparePartReportRecordWithOutUnitsSold(rs)) : Optional.empty();
 
-			part = rs.next() ? Optional.of(RecordAssembler.toSparePartReportRecordWithOutUnitsSold(rs)) : Optional.empty();
+		pst2 = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_GET_VENTAS_BY_SPAREPART_ID"));
 
-			pst2 = c.prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_GET_VENTAS_BY_SPAREPART_ID"));
+		pst2.setString(1, part.get().id);
 
-			pst2.setString(1, part.get().id);
+		rs2 = pst2.executeQuery();
 
-			rs2 = pst2.executeQuery();
+		rs2.next();
 
-			rs2.next();
+		part.get().totalUnitsSold = rs2.getInt("ventas");
 
-			part.get().totalUnitsSold = rs2.getInt("ventas");
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return part;
 	}
 
 	@Override
-	public Optional<SparePartReportRecord> isPresent(String code) {
-		Connection c = null;
+	public Optional<SparePartReportRecord> isPresent(String code) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<SparePartReportRecord> part = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_GET_BY_CODE"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_BY_CODE"));
+		pst.setString(1, code);
 
-			pst.setString(1, code);
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		part = rs.next() ? Optional.of(RecordAssembler.toSparePartReportRecordWithOutUnitsSold(rs)) : Optional.empty();
 
-			part = rs.next() ? Optional.of(RecordAssembler.toSparePartReportRecordWithOutUnitsSold(rs)) : Optional.empty();
-
-			System.out.println(part);
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return part;
 	}
 
@@ -103,45 +81,35 @@ public class SparePartReportGatewayImpl implements SparePartReportGateway {
 	}
 
 	@Override
-	public List<SparePartReportRecord> findByDescription(String description) {
-		Connection c = null;
+	public List<SparePartReportRecord> findByDescription(String description) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		PreparedStatement pst2 = null;
 		ResultSet rs2 = null;
 		List<SparePartReportRecord> parts = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_BY_DESCRIPTION"));
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_FIND_BY_DESCRIPTION"));
+		String description1 = "%" + description + "%";
 
-			String description1 = "%" + description + "%";
+		pst.setString(1, description1);
 
-			pst.setString(1, description1);
+		pst2 = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_GET_VENTAS_BY_SPAREPART_ID"));
 
-			pst2 = c.prepareStatement(Conf.getInstance().getProperty("TSPAREPARTS_GET_VENTAS_BY_SPAREPART_ID"));
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		parts = RecordAssembler.toSparePartReportRecordListWithOutSolds(rs);
 
-			parts = RecordAssembler.toSparePartReportRecordListWithOutSolds(rs);
-
-			while(rs.next()){
-				SparePartReportRecord part = new SparePartReportRecord();
-				pst2.setString(1, rs.getString("id"));
-				rs2 = pst2.executeQuery();
-				while(rs2.next()){
-					part.totalUnitsSold = rs2.getInt("ventas");
-					parts.add(part);
-				}
+		while(rs.next()){
+			SparePartReportRecord part = new SparePartReportRecord();
+			pst2.setString(1, rs.getString("id"));
+			rs2 = pst2.executeQuery();
+			while(rs2.next()){
+				part.totalUnitsSold = rs2.getInt("ventas");
+				parts.add(part);
 			}
+		}
 
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return parts;
 	}
 

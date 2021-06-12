@@ -60,7 +60,6 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 		rs = pst.executeQuery();
 
-
 		record = rs.next() ? Optional.of(RecordAssembler.toWorkOrderRecord(rs)) : Optional.empty();
 
 		return record;

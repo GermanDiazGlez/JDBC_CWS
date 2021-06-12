@@ -25,8 +25,10 @@ public class UpdateAction implements Action {
 			Console.println("Please mind the nif/code and try again");
 			return;
 		}
-		
+
+
 		SupplyDto dto = op.get();
+
 		Console.println("Current data for the supply: ");
 		Printer.print( dto );
 		
