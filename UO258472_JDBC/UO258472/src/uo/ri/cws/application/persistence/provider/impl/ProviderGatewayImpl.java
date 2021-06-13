@@ -104,7 +104,6 @@ public class ProviderGatewayImpl implements ProviderGateway {
 
 	@Override
 	public Optional<ProviderRecord> findProviderNameByOrderCode(String code) throws SQLException {
-		Connection c = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<ProviderRecord> prov = null;

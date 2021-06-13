@@ -36,9 +36,12 @@ public class GenerateOrders implements Command<List<OrderDto>>{
 		List<SparePartRecord> parts = sparePartGateway.findUnderStock();
 		List<OrderDto> orders = new ArrayList<>();
 
-		for(SparePartRecord p : parts){
-			generateOrder(p, orders);
+		if(!parts.isEmpty()){
+			for(SparePartRecord p : parts){
+				generateOrder(p, orders);
+			}
 		}
+
 		return orders;
 	}
 

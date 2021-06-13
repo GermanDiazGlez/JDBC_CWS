@@ -87,7 +87,7 @@ public class SupplyGatewayImpl implements SupplyGateway {
 		ResultSet rs = null;
 		Optional<SupplyRecord> supp = null;
 
-		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_BY_ID"));
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SUPLY_BY_SPAREPART_ID"));
 		pst.setString(1, id);
 		rs = pst.executeQuery();
 

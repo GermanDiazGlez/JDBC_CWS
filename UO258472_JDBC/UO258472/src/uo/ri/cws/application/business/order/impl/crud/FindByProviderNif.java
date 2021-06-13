@@ -1,6 +1,7 @@
 package uo.ri.cws.application.business.order.impl.crud;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import alb.util.assertion.Argument;
@@ -26,23 +27,23 @@ public class FindByProviderNif implements Command<List<OrderDto>>{
 	}
 
 	@Override
-	public List<OrderDto> execute() throws BusinessException, SQLException {
-		List<OrderDto> orders;
+	public List<OrderDto> execute() throws SQLException {
+		List<OrderDto> orders = new ArrayList<>();
 		OrderGateway og = PersistenceFactory.forOrders();
 		ProviderGateway pg = PersistenceFactory.forProviders();
 
-		BusinessCheck.isTrue(pg.findProviderByNif(nif).isPresent(), "That nif dont match with any provider");
+		if(pg.findProviderByNif(nif).isPresent()) {
 
-		ProviderDto provider = DtoMapper.toDto(pg.findProviderByNif(nif).get());
+			ProviderDto provider = DtoMapper.toDto(pg.findProviderByNif(nif).get());
 
-		orders = DtoMapper.toDtoListOrd(og.findOrdersByProviderNif(provider.id));
-		
-		for (OrderDto orderDto : orders) {
-			orderDto.provider.id = provider.id;
-			orderDto.provider.name = provider.name;
-			orderDto.provider.nif = provider.nif;
+			orders = DtoMapper.toDtoListOrd(og.findOrdersByProviderNif(provider.id));
+
+			for (OrderDto orderDto : orders) {
+				orderDto.provider.id = provider.id;
+				orderDto.provider.name = provider.name;
+				orderDto.provider.nif = provider.nif;
+			}
 		}
-		
 		return orders;
 	}
 

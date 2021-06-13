@@ -28,27 +28,28 @@ public class FindByCode implements Command<Optional<OrderDto>>{
 	}
 
 	@Override
-	public Optional<OrderDto> execute() throws BusinessException, SQLException {
+	public Optional<OrderDto> execute() throws SQLException {
 		OrderGateway og = PersistenceFactory.forOrders();
 		OrderLinesGateway olg = PersistenceFactory.forOrderLines();
 		ProviderGateway pg = PersistenceFactory.forProviders();
 
-		BusinessCheck.isTrue(og.findByCode(code).isPresent(), "That code is not an order code");
-		OrderDto order = DtoMapper.toDtoOr(og.findByCode(code)).get();
-		
-		ProviderDto provider = DtoMapper.toDto(pg.findProviderNameByOrderCode(code).get());
+		if(og.findByCode(code).isPresent()) {
+			OrderDto order = DtoMapper.toDtoOr(og.findByCode(code)).get();
 
-		order.provider.id = provider.id;
-		order.provider.name = provider.name;
-		order.provider.nif = provider.nif;
-		
-		List<OrderLineDto> lines = DtoMapper.toDtoListOrdLin(olg.getLinesForOrder(order.id));
-		
-		order.lines = lines;
-		
-		Optional<OrderDto> optional = Optional.of(order);
-		
-		return optional;
+			ProviderDto provider = DtoMapper.toDto(pg.findProviderNameByOrderCode(code).get());
+
+			order.provider.id = provider.id;
+			order.provider.name = provider.name;
+			order.provider.nif = provider.nif;
+
+			List<OrderLineDto> lines = DtoMapper.toDtoListOrdLin(olg.getLinesForOrder(order.id));
+
+			order.lines = lines;
+
+			Optional<OrderDto> optional = Optional.of(order);
+			return optional;
+		}
+		return Optional.empty();
 	}
 
 }

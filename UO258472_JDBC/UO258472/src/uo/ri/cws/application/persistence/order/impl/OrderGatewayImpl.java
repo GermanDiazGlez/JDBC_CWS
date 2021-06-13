@@ -148,7 +148,6 @@ public class OrderGatewayImpl implements OrderGateway{
 
 	@Override
 	public void insertOrder(OrderToGenerateRecord order) throws SQLException {
-		Connection c = null;
 		PreparedStatement pst = null;
 
 		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TORDERS_INSERT_ORDER"));
@@ -179,7 +178,6 @@ public class OrderGatewayImpl implements OrderGateway{
 		pst.setString(3, t.id);
 
 		pst.executeUpdate();
-
 	}
 
 }

@@ -1,5 +1,6 @@
 package uo.ri.cws.application.persistence.substitution;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 import uo.ri.cws.application.persistence.Gateway;
@@ -11,6 +12,6 @@ public interface SubstitutionGateway extends Gateway<SubstitutionRecord> {
 	 * @param id
 	 * @return SubstitutionRecord or null if none
 	 */
-	Optional<SubstitutionRecord> findBySparePartId(String id);
+	Optional<SubstitutionRecord> findBySparePartId(String id) throws SQLException;
 
 }

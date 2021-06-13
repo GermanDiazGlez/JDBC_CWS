@@ -16,57 +16,22 @@ import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class SubstitutionGatewayImpl implements SubstitutionGateway{
 
-//	@Override
-//	public List<SparePartRecord> findAll() throws SQLException {
-//		Connection c = null;
-//		PreparedStatement pst = null;
-//		ResultSet rs = null;
-//		List<SparePartRecord> parts = null;
-//
-//		try {
-//			c = Jdbc.getCurrentConnection();
-//
-//			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_ALL"));
-//
-//			rs = pst.executeQuery();
-//
-//			parts = RecordAssembler.toSparePartRecordList(rs);
-//
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
-//		finally {
-//			Jdbc.close(pst);
-//		}
-//		return parts;
-//	}
-
 	@Override
-	public Optional<SubstitutionRecord> findById(String id) {
-		Connection c = null;
+	public Optional<SubstitutionRecord> findById(String id) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<SubstitutionRecord> supp = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_BY_ID"));
+		pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUPPLIES_FIND_SPAREPART_BY_ID"));
-			pst.setString(1, id);
-			rs = pst.executeQuery();
+		pst.setString(1, id);
 
-			pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+		supp = rs.next() ? Optional.of(RecordAssembler.toSubstitutionRecord(rs)) : Optional.empty();
 
-			supp = rs.next() ? Optional.of(RecordAssembler.toSubstitutionRecord(rs)) : Optional.empty();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return supp;
 	}
 
@@ -95,27 +60,17 @@ public class SubstitutionGatewayImpl implements SubstitutionGateway{
 	}
 
 	@Override
-	public Optional<SubstitutionRecord> findBySparePartId(String id) {
-		Connection c = null;
+	public Optional<SubstitutionRecord> findBySparePartId(String id) throws SQLException {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<SubstitutionRecord> supp = null;
 
-		try {
-			c = Jdbc.getCurrentConnection();
+		pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("TSUBSTITUTIONS_FIND_SPAREPART_BY_ID"));
+		pst.setString(1, id);
+		rs = pst.executeQuery();
 
-			pst = c.prepareStatement(Conf.getInstance().getProperty("TSUBSTITUTIONS_FIND_SPAREPART_BY_ID"));
-			pst.setString(1, id);
-			rs = pst.executeQuery();
+		supp = rs.next() ? Optional.of(RecordAssembler.toSubstitutionRecord(rs)) : Optional.empty();
 
-			supp = rs.next() ? Optional.of(RecordAssembler.toSubstitutionRecord(rs)) : Optional.empty();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		finally {
-			Jdbc.close(pst);
-		}
 		return supp;
 	}
 
