@@ -26,6 +26,11 @@ public interface InvoicingService {
 			throws BusinessException;
 
 
+	/**
+	 * @param dni
+	 * @return A list of the InvoicingWorkordersDto matching with the client dni
+	 * @throws BusinessException
+	 */
 	List<InvoicingWorkOrderDto> findWorkOrdersByClientDni(String dni)
 			throws BusinessException;
 

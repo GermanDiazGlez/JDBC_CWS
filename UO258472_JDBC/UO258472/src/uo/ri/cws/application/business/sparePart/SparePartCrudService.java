@@ -74,5 +74,10 @@ public interface SparePartCrudService {
 	 */
 	List<SparePartDto> findAll() throws BusinessException;
 
+	/**
+	 * @return a list of sparePartsDto which are under stock and not in
+	 * a current order
+	 * @throws BusinessException DOES NOT
+	 */
 	List<SparePartDto> findUnderStock() throws BusinessException;
 }
